@@ -1,0 +1,977 @@
+﻿<!DOCTYPE html>
+<html lang="bn">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Captionspi - Premium Captions Collection</title>
+   <!-- Font Awesome Icons -->
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <!-- Google Fonts -->
+   <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+   <style>
+       :root {
+           --primary: #10b981;
+           --primary-light: #ecfdf5;
+           --primary-dark: #047857;
+           --bg-color: #f0fdf4;
+           --card-bg: #ffffff;
+           --text-main: #1f2937;
+           --text-muted: #6b7280;
+           --border: #d1fae5;
+           --shadow: 0 4px 20px rgba(16, 185, 129, 0.08);
+           --radius: 16px;
+       }
+
+       * {
+           box-sizing: border-box;
+           margin: 0;
+           padding: 0;
+           font-family: 'Hind Siliguri', sans-serif;
+           -webkit-tap-highlight-color: transparent;
+       }
+
+       body {
+           background-color: var(--bg-color);
+           color: var(--text-main);
+           padding-bottom: 80px;
+           overflow-x: hidden;
+       }
+
+       /* Top Header */
+       header {
+           background: rgba(255, 255, 255, 0.9);
+           backdrop-filter: blur(10px);
+           -webkit-backdrop-filter: blur(10px);
+           padding: 15px 20px;
+           position: sticky;
+           top: 0;
+           z-index: 100;
+           box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+       }
+
+       .logo {
+           font-size: 22px;
+           font-weight: 700;
+           color: var(--primary-dark);
+           display: flex;
+           align-items: center;
+           gap: 8px;
+       }
+
+       /* Container */
+       .container {
+           max-width: 600px;
+           margin: 0 auto;
+           padding: 15px;
+       }
+
+       /* Categories Scrollable Bar */
+       .category-scroll {
+           display: flex;
+           gap: 10px;
+           overflow-x: auto;
+           padding: 5px 0 15px 0;
+           scrollbar-width: none;
+       }
+
+       .category-scroll::-webkit-scrollbar {
+           display: none;
+       }
+
+       .cat-chip {
+           background: var(--card-bg);
+           padding: 8px 18px;
+           border-radius: 30px;
+           white-space: nowrap;
+           font-size: 14px;
+           font-weight: 500;
+           color: var(--text-muted);
+           border: 1px solid var(--border);
+           cursor: pointer;
+           transition: all 0.25s ease;
+       }
+
+       .cat-chip.active {
+           background: var(--primary);
+           color: white;
+           border-color: var(--primary);
+           box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+           transform: translateY(-1px);
+       }
+
+       /* Banner Ads Slot Above Each Caption */
+       .ad-banner-wrapper {
+           width: 100%;
+           min-height: 50px;
+           background: #e5e7eb;
+           border-radius: 12px;
+           margin-bottom: 10px;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           overflow: hidden;
+           border: 1px dashed #cbd5e1;
+       }
+
+       .ad-banner-placeholder {
+           font-size: 11px;
+           color: #94a3b8;
+           letter-spacing: 0.5px;
+           text-transform: uppercase;
+       }
+
+       /* Caption Item Wrapper (Smoother Performance) */
+       .caption-wrapper {
+           margin-bottom: 20px;
+           will-change: transform, opacity;
+           animation: fadeIn 0.3s ease-out forwards;
+       }
+
+       @keyframes fadeIn {
+           from { opacity: 0; transform: translateY(8px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+
+       /* Caption Cards */
+       .caption-card {
+           background: var(--card-bg);
+           border-radius: var(--radius);
+           padding: 20px;
+           box-shadow: var(--shadow);
+           border: 1px solid var(--border);
+           position: relative;
+           transition: transform 0.2s ease, box-shadow 0.2s ease;
+       }
+
+       .caption-card:active {
+           transform: scale(0.99);
+       }
+
+       .caption-text {
+           font-size: 16px;
+           line-height: 1.6;
+           color: var(--text-main);
+           white-space: pre-line;
+           margin-bottom: 15px;
+           user-select: text;
+       }
+
+       .caption-meta {
+           display: flex;
+           justify-content: space-between;
+           align-items: center;
+           border-top: 1px dashed var(--border);
+           padding-top: 12px;
+           font-size: 13px;
+           color: var(--text-muted);
+       }
+
+       .action-btns {
+           display: flex;
+           gap: 12px;
+       }
+
+       .btn-icon {
+           background: var(--primary-light);
+           color: var(--primary-dark);
+           border: 1px solid var(--border);
+           width: 36px;
+           height: 36px;
+           border-radius: 50%;
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           cursor: pointer;
+           font-size: 15px;
+           transition: transform 0.15s ease, background 0.15s ease;
+       }
+
+       .btn-icon:active {
+           transform: scale(0.88);
+           background: var(--primary);
+           color: white;
+       }
+
+       /* Navigation Bottom Bar */
+       .bottom-nav {
+           position: fixed;
+           bottom: 0;
+           left: 0;
+           right: 0;
+           background: rgba(255, 255, 255, 0.95);
+           backdrop-filter: blur(10px);
+           -webkit-backdrop-filter: blur(10px);
+           display: flex;
+           justify-content: space-around;
+           padding: 10px 0;
+           box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+           z-index: 1000;
+       }
+
+       .nav-item {
+           display: flex;
+           flex-direction: column;
+           align-items: center;
+           font-size: 12px;
+           color: var(--text-muted);
+           cursor: pointer;
+           border: none;
+           background: none;
+           transition: color 0.2s ease, transform 0.2s ease;
+       }
+
+       .nav-item i {
+           font-size: 20px;
+           margin-bottom: 3px;
+       }
+
+       .nav-item.active {
+           color: var(--primary-dark);
+           font-weight: 600;
+           transform: translateY(-2px);
+       }
+
+       /* View Sections */
+       .view-section {
+           display: none;
+           animation: sectionSlide 0.25s ease-out;
+       }
+
+       @keyframes sectionSlide {
+           from { opacity: 0; transform: translateY(4px); }
+           to { opacity: 1; transform: translateY(0); }
+       }
+
+       .view-section.active {
+           display: block;
+       }
+
+       /* Forms & Inputs */
+       .form-card {
+           background: var(--card-bg);
+           border-radius: var(--radius);
+           padding: 20px;
+           box-shadow: var(--shadow);
+           margin-bottom: 20px;
+           border: 1px solid var(--border);
+       }
+
+       .form-group {
+           margin-bottom: 15px;
+       }
+
+       .form-group label {
+           display: block;
+           margin-bottom: 6px;
+           font-size: 14px;
+           font-weight: 500;
+           color: var(--text-main);
+       }
+
+       .form-control {
+           width: 100%;
+           padding: 12px 15px;
+           border: 1px solid var(--border);
+           border-radius: 10px;
+           font-size: 14px;
+           background: var(--bg-color);
+           outline: none;
+           transition: border 0.2s ease;
+       }
+
+       .form-control:focus {
+           border-color: var(--primary);
+       }
+
+       textarea.form-control {
+           resize: vertical;
+           min-height: 120px;
+       }
+
+       .btn-submit {
+           width: 100%;
+           padding: 12px;
+           background: var(--primary);
+           color: white;
+           border: none;
+           border-radius: 10px;
+           font-size: 16px;
+           font-weight: 600;
+           cursor: pointer;
+           box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+           transition: background 0.2s ease, transform 0.15s ease;
+       }
+
+       .btn-submit:active {
+           transform: scale(0.98);
+       }
+
+       /* Profile Card */
+       .profile-card {
+           text-align: center;
+           background: var(--card-bg);
+           padding: 25px 20px;
+           border-radius: var(--radius);
+           box-shadow: var(--shadow);
+           margin-bottom: 20px;
+           border: 1px solid var(--border);
+       }
+
+       .profile-avatar {
+           width: 70px;
+           height: 70px;
+           border-radius: 50%;
+           background: var(--primary-light);
+           color: var(--primary-dark);
+           display: flex;
+           align-items: center;
+           justify-content: center;
+           font-size: 30px;
+           margin: 0 auto 15px;
+       }
+
+       .points-badge {
+           display: inline-flex;
+           align-items: center;
+           gap: 6px;
+           background: #fef3c7;
+           color: #d97706;
+           padding: 6px 16px;
+           border-radius: 20px;
+           font-weight: 600;
+           font-size: 14px;
+           margin-top: 10px;
+       }
+
+       /* Admin Controls */
+       .admin-controls {
+           display: flex;
+           gap: 10px;
+           margin-bottom: 15px;
+           flex-wrap: wrap;
+       }
+
+       .btn-action {
+           padding: 10px 15px;
+           border-radius: 8px;
+           border: none;
+           color: white;
+           font-weight: 600;
+           cursor: pointer;
+           font-size: 13px;
+           display: flex;
+           align-items: center;
+           gap: 6px;
+           transition: transform 0.15s ease;
+       }
+
+       .btn-action:active { transform: scale(0.96); }
+
+       .btn-approve-all { background: var(--primary); }
+       .btn-reject-all { background: #ef4444; }
+
+       .pending-item {
+           background: var(--card-bg);
+           border: 1px solid var(--border);
+           padding: 15px;
+           border-radius: 10px;
+           margin-bottom: 10px;
+           display: flex;
+           gap: 12px;
+           align-items: flex-start;
+       }
+
+       .pending-checkbox {
+           margin-top: 4px;
+           width: 18px;
+           height: 18px;
+           accent-color: var(--primary);
+           cursor: pointer;
+       }
+
+       .pending-content {
+           flex: 1;
+       }
+
+       .pending-actions {
+           display: flex;
+           gap: 10px;
+           margin-top: 10px;
+       }
+
+       .btn-acc {
+           background: var(--primary);
+           color: white;
+           border: none;
+           padding: 6px 12px;
+           border-radius: 6px;
+           cursor: pointer;
+       }
+
+       .btn-rej {
+           background: #ef4444;
+           color: white;
+           border: none;
+           padding: 6px 12px;
+           border-radius: 6px;
+           cursor: pointer;
+       }
+
+       /* Toast Notification */
+       .toast {
+           position: fixed;
+           bottom: 75px;
+           left: 50%;
+           transform: translateX(-50%);
+           background: #065f46;
+           color: #fff;
+           padding: 10px 22px;
+           border-radius: 25px;
+           font-size: 13px;
+           display: none;
+           z-index: 2000;
+           box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+           animation: popIn 0.2s ease-out;
+       }
+
+       @keyframes popIn {
+           from { opacity: 0; transform: translate(-50%, 10px); }
+           to { opacity: 1; transform: translate(-50%, 0); }
+       }
+   </style>
+</head>
+<body>
+
+   <header>
+       <div class="logo">
+           <i class="fa-solid fa-leaf"></i> Captionspi
+       </div>
+   </header>
+
+   <div class="container">
+       <!-- HOME SECTION -->
+       <section id="sec-home" class="view-section active">
+           <div class="category-scroll" id="categoryContainer">
+               <button class="cat-chip active" onclick="filterCat('all')">সকল</button>
+           </div>
+           <div id="captionsList"></div>
+       </section>
+
+       <!-- ADD CAPTION SECTION -->
+       <section id="sec-add" class="view-section">
+           <div class="form-card">
+               <h3 style="margin-bottom: 15px; color: var(--primary-dark);">নতুন ক্যাপশন যোগ করুন</h3>
+               <div class="form-group">
+                   <label>ক্যাটাগরি নির্বাচন করুন</label>
+                   <select id="addCategorySelect" class="form-control"></select>
+               </div>
+               <div class="form-group">
+                   <label>ক্যাপশন (ChatGPT থেকে সরাসরি পেস্ট করতে পারেন)</label>
+                   <textarea id="addCaptionText" class="form-control" placeholder="এখানে ক্যাপশন লিখুন বা পেস্ট করুন... নোট: একসাথে একাধিক ক্যাপশন থাকলে প্রতিটি নতুন লাইনে ১টি করে ক্যাপশন হিসেবে বিভক্ত হবে।"></textarea>
+               </div>
+               <button class="btn-submit" onclick="submitCaption()">জমা দিন</button>
+           </div>
+       </section>
+
+       <!-- PROFILE SECTION -->
+       <section id="sec-profile" class="view-section">
+           <div class="profile-card">
+               <div class="profile-avatar">
+                   <i class="fa-solid fa-user"></i>
+               </div>
+               <h3 id="profileUsername">ইউজার আইডি</h3>
+               <div class="points-badge">
+                   <i class="fa-solid fa-coins"></i> <span id="profilePoints">0</span> পয়েন্ট
+               </div>
+           </div>
+
+           <div class="form-card">
+               <h4 style="margin-bottom: 12px;">ইউজার আইডেন্টিটি সেট করুন</h4>
+               <div class="form-group">
+                   <label>ইউজার নেম</label>
+                   <input type="text" id="usernameInput" class="form-control" placeholder="আপনার নাম লিখুন">
+               </div>
+               <div class="form-group">
+                   <label>পাসওয়ার্ড (আইডি ভেরিফিকেশন)</label>
+                   <input type="password" id="passwordInput" class="form-control" placeholder="পাসওয়ার্ড">
+               </div>
+               <button class="btn-submit" onclick="saveProfile()">সেভ করুন</button>
+           </div>
+       </section>
+
+       <!-- ADMIN LOGIN SECTION -->
+       <section id="sec-admin-login" class="view-section">
+           <div class="form-card">
+               <h3 style="margin-bottom: 15px; color: var(--primary-dark);">এডমিন লগইন</h3>
+               <div class="form-group">
+                   <label>এডমিন পাসওয়ার্ড দিন</label>
+                   <input type="password" id="adminPassInput" class="form-control" placeholder="পাসওয়ার্ড লিখুন">
+               </div>
+               <button class="btn-submit" onclick="verifyAdmin()">প্রবেশ করুন</button>
+           </div>
+       </section>
+
+       <!-- ADMIN PANEL SECTION -->
+       <section id="sec-admin" class="view-section">
+           <div class="form-card">
+               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                   <h3 style="color: var(--primary-dark);">এডমিন প্যানেল</h3>
+                   <button onclick="logoutAdmin()" style="background: none; border: none; color: #ef4444; cursor: pointer; font-weight: 600;"><i class="fa-solid fa-sign-out-alt"></i> লগআউট</button>
+               </div>
+               
+               <h4 style="margin-top: 10px; margin-bottom: 10px;">নতুন ক্যাটাগরি যোগ করুন</h4>
+               <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                   <input type="text" id="newCatInput" class="form-control" placeholder="নতুন ক্যাটাগরির নাম">
+                   <button class="btn-submit" style="width: auto; padding: 0 15px;" onclick="addCategory()">যোগ</button>
+               </div>
+
+               <h4 style="margin-bottom: 10px;">অনুমোদনের জন্য অপেক্ষারত ক্যাপশনসমূহ</h4>
+               
+               <div class="admin-controls">
+                   <button class="btn-action btn-approve-all" onclick="approveSelected()"><i class="fa-solid fa-check-double"></i> সিলেক্ট করাগুলো একসাথে অনুমোদন</button>
+                   <button class="btn-action btn-reject-all" onclick="rejectSelected()"><i class="fa-solid fa-trash-can"></i> সিলেক্ট করাগুলো মুছে ফেলুন</button>
+               </div>
+
+               <div style="margin-bottom: 10px;">
+                   <label style="font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                       <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" style="accent-color: var(--primary);"> সব সিলেক্ট করুন
+                   </label>
+               </div>
+
+               <div id="pendingContainer"></div>
+           </div>
+       </section>
+   </div>
+
+   <!-- Toast -->
+   <div id="toast" class="toast"></div>
+
+   <!-- Bottom Navigation -->
+   <nav class="bottom-nav">
+       <button class="nav-item active" onclick="switchTab('sec-home', this)">
+           <i class="fa-solid fa-house"></i>
+           <span>হোম</span>
+       </button>
+       <button class="nav-item" onclick="switchTab('sec-add', this)">
+           <i class="fa-solid fa-plus-circle"></i>
+           <span>পোস্ট</span>
+       </button>
+       <button class="nav-item" onclick="switchTab('sec-profile', this)">
+           <i class="fa-solid fa-user-circle"></i>
+           <span>প্রোফাইল</span>
+       </button>
+       <button class="nav-item" onclick="handleAdminTab(this)">
+           <i class="fa-solid fa-user-shield"></i>
+           <span>এডমিন</span>
+       </button>
+   </nav>
+
+   <!-- Firebase SDK Imports -->
+   <script type="module">
+       import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+       import { getDatabase, ref, push, set, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+       const firebaseConfig = {
+           apiKey: "AIzaSyAq-O_Grhp4gPbu-vamDljYueqYFbjXEw4",
+           authDomain: "captionspi.firebaseapp.com",
+           databaseURL: "https://captionspi-default-rtdb.asia-southeast1.firebasedatabase.app",
+           projectId: "captionspi",
+           storageBucket: "captionspi.firebasestorage.app",
+           messagingSenderId: "835915153549",
+           appId: "1:835915153549:web:e48fc1f357dc29aa2a62c4",
+           measurementId: "G-M7X9GWEMZH"
+       };
+
+       const app = initializeApp(firebaseConfig);
+       const db = getDatabase(app);
+
+       // Fast In-Memory Cache for Realtime Smooth Performance
+       let cachedCaptions = null;
+
+       // State Variables
+       let defaultCategories = ["ট্রেডিং", "ইসলামিক", "বাস্তব জীবন", "প্রেম", "বন্ধু"];
+       let allCategories = [];
+       let currentFilter = 'all';
+       let isAdminLoggedIn = false;
+       let pendingDataMap = {};
+
+       // Local User Profile Setup
+       let userProfile = JSON.parse(localStorage.getItem('captionspi_user')) || {
+           username: "User_" + Math.floor(1000 + Math.random() * 9000),
+           password: "123",
+           points: 0,
+           uploadsCount: 0
+       };
+
+       window.onload = () => {
+           initProfileUI();
+           fetchCategories();
+           listenToApprovedCaptions();
+       };
+
+       // Fast Navigation Tab Switcher
+       window.switchTab = function(tabId, element) {
+           document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+           document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+           document.getElementById(tabId).classList.add('active');
+           if(element) element.classList.add('active');
+           window.scrollTo({ top: 0, behavior: 'instant' });
+       };
+
+       window.handleAdminTab = function(element) {
+           if (isAdminLoggedIn) {
+               switchTab('sec-admin', element);
+               fetchPendingCaptions();
+           } else {
+               switchTab('sec-admin-login', element);
+           }
+       };
+
+       window.verifyAdmin = function() {
+           const pass = document.getElementById('adminPassInput').value;
+           if (pass === "SakibPro@#12") {
+               isAdminLoggedIn = true;
+               document.getElementById('adminPassInput').value = '';
+               showToast("এডমিন হিসেবে লগইন সফল!");
+               switchTab('sec-admin', document.querySelectorAll('.nav-item')[3]);
+               fetchPendingCaptions();
+           } else {
+               showToast("ভুল পাসওয়ার্ড!");
+           }
+       };
+
+       window.logoutAdmin = function() {
+           isAdminLoggedIn = false;
+           switchTab('sec-home', document.querySelectorAll('.nav-item')[0]);
+           showToast("এডমিন লগআউট করা হয়েছে");
+       };
+
+       // Profile Handling
+       function initProfileUI() {
+           document.getElementById('profileUsername').innerText = userProfile.username;
+           document.getElementById('profilePoints').innerText = userProfile.points;
+           document.getElementById('usernameInput').value = userProfile.username;
+           document.getElementById('passwordInput').value = userProfile.password;
+       }
+
+       window.saveProfile = function() {
+           const u = document.getElementById('usernameInput').value.trim();
+           const p = document.getElementById('passwordInput').value.trim();
+           if(u && p) {
+               userProfile.username = u;
+               userProfile.password = p;
+               localStorage.setItem('captionspi_user', JSON.stringify(userProfile));
+               initProfileUI();
+               showToast("প্রোফাইল সংরক্ষিত হয়েছে!");
+           } else {
+               showToast("ইউজারনেম এবং পাসওয়ার্ড পূরণ করুন");
+           }
+       };
+
+       // Categories Handling
+       function fetchCategories() {
+           onValue(ref(db, 'categories'), (snapshot) => {
+               const data = snapshot.val();
+               allCategories = [...defaultCategories];
+               if (data) {
+                   Object.values(data).forEach(c => {
+                       if (!allCategories.includes(c)) allCategories.push(c);
+                   });
+               }
+               renderCategoryChips();
+               renderCategoryDropdown();
+           });
+       }
+
+       function renderCategoryChips() {
+           const container = document.getElementById('categoryContainer');
+           let html = `<button class="cat-chip ${currentFilter === 'all' ? 'active' : ''}" onclick="filterCat('all')">সকল</button>`;
+           allCategories.forEach(cat => {
+               html += `<button class="cat-chip ${currentFilter === cat ? 'active' : ''}" onclick="filterCat('${cat}')">${cat}</button>`;
+           });
+           container.innerHTML = html;
+       }
+
+       function renderCategoryDropdown() {
+           const select = document.getElementById('addCategorySelect');
+           select.innerHTML = allCategories.map(c => `<option value="${c}">${c}</option>`).join('');
+       }
+
+       window.filterCat = function(cat) {
+           currentFilter = cat;
+           renderCategoryChips();
+           renderCaptionsFromCache();
+       };
+
+       window.addCategory = function() {
+           const catName = document.getElementById('newCatInput').value.trim();
+           if(catName) {
+               push(ref(db, 'categories'), catName);
+               document.getElementById('newCatInput').value = '';
+               showToast("নতুন ক্যাটাগরি যোগ হয়েছে");
+           }
+       };
+
+       // Submit Captions
+       window.submitCaption = function() {
+           const text = document.getElementById('addCaptionText').value.trim();
+           const category = document.getElementById('addCategorySelect').value;
+
+           if(!text) {
+               showToast("ক্যাপশন লিখুন!");
+               return;
+           }
+
+           const captionsArray = text.split('\n').map(c => c.trim()).filter(c => c.length > 0);
+           const updates = {};
+
+           captionsArray.forEach(cap => {
+               const newKey = push(ref(db, 'pending_captions')).key;
+               updates[`pending_captions/${newKey}`] = {
+                   text: cap,
+                   category: category,
+                   author: userProfile.username,
+                   timestamp: Date.now()
+               };
+           });
+
+           // Fast Batch Write to Firebase
+           update(ref(db), updates);
+
+           userProfile.uploadsCount += captionsArray.length;
+           if(userProfile.uploadsCount >= 1000) {
+               const pointsEarned = Math.floor(userProfile.uploadsCount / 1000) * 1000;
+               userProfile.points += pointsEarned;
+               userProfile.uploadsCount = userProfile.uploadsCount % 1000;
+           }
+           localStorage.setItem('captionspi_user', JSON.stringify(userProfile));
+           initProfileUI();
+
+           document.getElementById('addCaptionText').value = '';
+           showToast(`${captionsArray.length} টি ক্যাপশন অনুমোদনের জন্য পাঠানো হয়েছে!`);
+       };
+
+       // Optimized Realtime Captions Listener
+       function listenToApprovedCaptions() {
+           onValue(ref(db, 'captions'), (snapshot) => {
+               cachedCaptions = snapshot.val();
+               renderCaptionsFromCache();
+           });
+       }
+
+       // Ultra Fast DOM Rendering with Banner Ad Slot on Top of Each Caption
+       function renderCaptionsFromCache() {
+           const list = document.getElementById('captionsList');
+           list.innerHTML = '';
+
+           if (!cachedCaptions) {
+               list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">কোনো ক্যাপশন পাওয়া যায়নি</p>';
+               return;
+           }
+
+           const items = Object.entries(cachedCaptions).reverse();
+           const fragment = document.createDocumentFragment();
+
+           items.forEach(([id, cap]) => {
+               if (currentFilter === 'all' || cap.category === currentFilter) {
+                   const wrapper = document.createElement('div');
+                   wrapper.className = 'caption-wrapper';
+                   
+                   wrapper.innerHTML = `
+                       <!-- Banner Ad Slot Above Every Caption -->
+                       <div class="ad-banner-wrapper">
+                           <!-- Replace script below with your Ad Provider (Adsterra / Google Ads) banner code -->
+                           <div class="ad-banner-placeholder">Advertisement 320x50 / 300x250</div>
+                       </div>
+
+                       <!-- Caption Card -->
+                       <div class="caption-card">
+                           <div class="caption-text">${escapeHtml(cap.text)}</div>
+                           <div class="caption-meta">
+                               <span><i class="fa-solid fa-folder-open"></i> ${cap.category}</span>
+                               <div class="action-btns">
+                                   <button class="btn-icon" onclick="copyCaption(this, \`${escapeJs(cap.text)}\`)"><i class="fa-regular fa-copy"></i></button>
+                               </div>
+                           </div>
+                       </div>
+                   `;
+                   fragment.appendChild(wrapper);
+               }
+           });
+
+           if(fragment.children.length === 0) {
+               list.innerHTML = '<p style="text-align:center; color:var(--text-muted); padding:20px;">এই ক্যাটাগরিতে কোনো ক্যাপশন নেই</p>';
+           } else {
+               list.appendChild(fragment);
+           }
+       }
+
+       // Fetch Pending Captions for Admin Panel
+       function fetchPendingCaptions() {
+           if(!isAdminLoggedIn) return;
+           onValue(ref(db, 'pending_captions'), (snapshot) => {
+               const data = snapshot.val();
+               const container = document.getElementById('pendingContainer');
+               container.innerHTML = '';
+               pendingDataMap = data || {};
+
+               if (!data) {
+                   container.innerHTML = '<p style="color:var(--text-muted);">কোনো ক্যাপশন পেন্ডিং নেই</p>';
+                   return;
+               }
+
+               const fragment = document.createDocumentFragment();
+               Object.entries(data).forEach(([id, cap]) => {
+                   const div = document.createElement('div');
+                   div.className = 'pending-item';
+                   div.innerHTML = `
+                       <input type="checkbox" class="pending-checkbox item-checkbox" value="${id}">
+                       <div class="pending-content">
+                           <div><strong>${cap.category}:</strong> ${escapeHtml(cap.text)}</div>
+                           <small>লেখক: ${escapeHtml(cap.author || 'অজানা')}</small>
+                           <div class="pending-actions">
+                               <button class="btn-acc" onclick="approveCaption('${id}', \`${escapeJs(cap.text)}\`, '${cap.category}')">অনুমোদন</button>
+                               <button class="btn-rej" onclick="rejectCaption('${id}')">মুছে ফেলুন</button>
+                           </div>
+                       </div>
+                   `;
+                   fragment.appendChild(div);
+               });
+               container.appendChild(fragment);
+           });
+       }
+
+       window.toggleSelectAll = function(mainCheckbox) {
+           const checkboxes = document.querySelectorAll('.item-checkbox');
+           checkboxes.forEach(cb => cb.checked = mainCheckbox.checked);
+       };
+
+       // Ultra Fast Batch Approval
+       window.approveSelected = function() {
+           const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+           if (checkboxes.length === 0) {
+               showToast("কমপক্ষে একটি ক্যাপশন সিলেক্ট করুন!");
+               return;
+           }
+
+           const updates = {};
+           checkboxes.forEach(cb => {
+               const id = cb.value;
+               const cap = pendingDataMap[id];
+               if (cap) {
+                   const newApprovedKey = push(ref(db, 'captions')).key;
+                   updates[`captions/${newApprovedKey}`] = {
+                       text: cap.text,
+                       category: cap.category,
+                       timestamp: Date.now()
+                   };
+                   updates[`pending_captions/${id}`] = null;
+               }
+           });
+
+           update(ref(db), updates).then(() => {
+               showToast(`${checkboxes.length} টি ক্যাপশন অনুমোদন করা হয়েছে!`);
+           });
+       };
+
+       // Ultra Fast Batch Rejection
+       window.rejectSelected = function() {
+           const checkboxes = document.querySelectorAll('.item-checkbox:checked');
+           if (checkboxes.length === 0) {
+               showToast("কমপক্ষে একটি ক্যাপশন সিলেক্ট করুন!");
+               return;
+           }
+
+           const updates = {};
+           checkboxes.forEach(cb => {
+               const id = cb.value;
+               updates[`pending_captions/${id}`] = null;
+           });
+
+           update(ref(db), updates).then(() => {
+               showToast(`${checkboxes.length} টি ক্যাপশন মুছে ফেলা হয়েছে!`);
+           });
+       };
+
+       window.approveCaption = function(id, text, category) {
+           const updates = {};
+           const newApprovedKey = push(ref(db, 'captions')).key;
+           updates[`captions/${newApprovedKey}`] = {
+               text: text,
+               category: category,
+               timestamp: Date.now()
+           };
+           updates[`pending_captions/${id}`] = null;
+
+           update(ref(db), updates).then(() => {
+               showToast("ক্যাপশন প্রকাশিত হয়েছে!");
+           });
+       };
+
+       window.rejectCaption = function(id) {
+           remove(ref(db, `pending_captions/${id}`));
+           showToast("ক্যাপশন বাতিল করা হয়েছে");
+       };
+
+       // Robust Direct Clipboard Copying Implementation
+       window.copyCaption = function(btnElement, text) {
+           if (navigator.clipboard && window.isSecureContext) {
+               navigator.clipboard.writeText(text).then(() => {
+                   indicateCopySuccess(btnElement);
+               }).catch(() => {
+                   fallbackCopyText(btnElement, text);
+               });
+           } else {
+               fallbackCopyText(btnElement, text);
+           }
+       };
+
+       function fallbackCopyText(btnElement, text) {
+           const textArea = document.createElement("textarea");
+           textArea.value = text;
+           textArea.style.position = "fixed";
+           textArea.style.top = "-9999px";
+           textArea.style.left = "-9999px";
+           document.body.appendChild(textArea);
+           textArea.focus();
+           textArea.select();
+           try {
+               document.execCommand('copy');
+               indicateCopySuccess(btnElement);
+           } catch (err) {
+               showToast("কপি করতে টেক্সট চাপ দিয়ে ধরুন");
+           }
+           document.body.removeChild(textArea);
+       }
+
+       function indicateCopySuccess(btnElement) {
+           showToast("ক্যাপশন কপি করা হয়েছে!");
+           if(btnElement) {
+               const icon = btnElement.querySelector('i');
+               if(icon) {
+                   icon.className = "fa-solid fa-check";
+                   setTimeout(() => { icon.className = "fa-regular fa-copy"; }, 1500);
+               }
+           }
+       }
+
+       function showToast(msg) {
+           const toast = document.getElementById('toast');
+           toast.innerText = msg;
+           toast.style.display = 'block';
+           setTimeout(() => { toast.style.display = 'none'; }, 2000);
+       }
+
+       function escapeHtml(str) {
+           return str.replace(/&/g, "&").replace(/</g, "<").replace(/>/g, ">");
+       }
+
+       function escapeJs(str) {
+           return str.replace(/`/g, '\\`').replace(/\\/g, '\\\\').replace(/\$/g, '\\$');
+       }
+   </script>
+</body>
+</html>
